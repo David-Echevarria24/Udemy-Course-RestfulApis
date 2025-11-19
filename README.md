@@ -25,6 +25,7 @@ This project is a simple Task Manager API that demonstrates RESTful API principl
 
 - .NET 8.0 SDK or later
 - Visual Studio 2022 or Visual Studio Code
+- Postman (for testing API endpoints)
 
 ### Running the Application
 
@@ -46,6 +47,17 @@ This project is a simple Task Manager API that demonstrates RESTful API principl
 4. The API will be available at:
    - HTTPS: `https://localhost:7xxx`
    - HTTP: `http://localhost:5xxx`
+
+5. Use Postman to test the API endpoints
+
+## Testing with Postman
+
+Import the API endpoints into Postman or manually create requests:
+
+1. Open Postman
+2. Create a new request
+3. Use the endpoints listed below with the appropriate HTTP methods
+4. Set the base URL to your localhost address (e.g., `https://localhost:7xxx`)
 
 ## API Endpoints
 
