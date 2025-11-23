@@ -11,12 +11,17 @@ This project is a simple Task Manager API that demonstrates RESTful API principl
 - Create, Read, Update, and Delete task items
 - RESTful endpoint design
 - Built with ASP.NET Core Web API
-- In-memory data storage
+- Entity Framework Core for data persistence
+- SQL Server LocalDB for database storage
+- Repository pattern implementation
+- Async/await operations for better performance
 
 ## Technologies Used
 
 - .NET 8.0
 - ASP.NET Core Web API
+- Entity Framework Core 9.0
+- SQL Server LocalDB
 - C#
 
 ## Getting Started
@@ -25,6 +30,7 @@ This project is a simple Task Manager API that demonstrates RESTful API principl
 
 - .NET 8.0 SDK or later
 - Visual Studio 2022 or Visual Studio Code
+- SQL Server LocalDB (included with Visual Studio)
 - Postman (for testing API endpoints)
 
 ### Running the Application
@@ -39,12 +45,17 @@ This project is a simple Task Manager API that demonstrates RESTful API principl
    cd TMApi
    ```
 
-3. Run the application:
+3. Apply database migrations:
+   ```bash
+   dotnet ef database update --project TMApi
+   ```
+
+4. Run the application:
    ```bash
    dotnet run --project TMApi
    ```
 
-4. The API will be available at:
+5. The API will be available at:
    - HTTPS: `https://localhost:7xxx`
    - HTTP: `http://localhost:5xxx`
 
@@ -75,11 +86,37 @@ Import the API endpoints into Postman or manually create requests:
 TMApi/
 ├── Controllers/
 │   └── TaskItemsController.cs    # API endpoints
+├── Data/
+│   └── ApiDbContext.cs           # Entity Framework DbContext
+├── Interface/
+│   └── ITaskRepository.cs        # Repository interface
+├── Migrations/                    # EF Core migrations
+│   ├── 20251120002246_InitialCreate.cs
+│   ├── 20251120002246_InitialCreate.Designer.cs
+│   └── ApiDbContextModelSnapshot.cs
 ├── Models/
-│   └── TaskItem.cs                # Data model
-├── Program.cs                     # Application entry point
+│   └── TaskItem.cs               # Data model
+├── Repositories/
+│   └── TaskRepository.cs         # Repository implementation
+├── Program.cs                    # Application entry point
 └── appsettings.json              # Configuration
 ```
+
+## Database
+
+The application uses SQL Server LocalDB with the following connection string:
+- **Server**: `(localdb)\\MSSQLLocalDB`
+- **Database**: `TaskManagementDB`
+- **Authentication**: Integrated Security
+
+### TaskItem Schema
+
+| Column      | Type      | Description                    |
+|-------------|-----------|--------------------------------|
+| Id          | int       | Primary key (auto-increment)   |
+| Title       | string    | Task title                     |
+| Description | string    | Task description               |
+| CreatedAt   | DateTime  | Timestamp of creation          |
 
 ## Learning Objectives
 
@@ -89,6 +126,11 @@ This project covers:
 - Status codes and responses
 - Controller-based routing
 - Data models and validation
+- Entity Framework Core integration
+- Database migrations
+- Repository pattern
+- Async/await operations
+- SQL Server database connectivity
 
 ## License
 
