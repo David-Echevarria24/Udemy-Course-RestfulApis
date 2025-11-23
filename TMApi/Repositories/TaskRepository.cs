@@ -1,43 +1,32 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TMApi.Data;
+using TMApi.Interface;
 using TMApi.Models;
 
-namespace TMApi.Controllers
+namespace TMApi.Repositories
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TaskItemsController : ControllerBase
+    public class TaskRepository : ITaskRepository
     {
+
         private ApiDbContext dbContext;
 
-        public TaskItemsController(ApiDbContext dbContext)
+        public TaskRepository(ApiDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<TaskItem>> Get()
-        {
-            return await dbContext.TaskItems.ToListAsync();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<TaskItem> Get(int id)
+        public async Task<TaskItem> GetTaskById(int id)
         {
             return await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
         }
-        [HttpPost]
-        public async Task Post([FromBody] TaskItem taskItem)
+
+        public async Task AddTask(TaskItem taskItem)
         {
             await dbContext.TaskItems.AddAsync(taskItem);
             await dbContext.SaveChangesAsync();
         }
 
-
-        [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] TaskItem taskItem)
+        public async  Task UpdateTask(int id, TaskItem taskItem)
         {
             var existingTaskItem = await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
             if (existingTaskItem != null)
@@ -48,8 +37,7 @@ namespace TMApi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task Delete(int id)
+        public async Task DeleteTask(int id)
         {
             var existingTaskItem = await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
             if (existingTaskItem != null)
@@ -57,6 +45,11 @@ namespace TMApi.Controllers
                 dbContext.TaskItems.Remove(existingTaskItem);
                 await dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<TaskItem>> GetAllTask()
+        {
+            return await dbContext.TaskItems.ToListAsync();
         }
     }
 }
