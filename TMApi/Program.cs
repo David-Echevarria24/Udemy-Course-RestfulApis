@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TMApi.Data;
+using TMApi.Interface;
+using TMApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ApiDbContext>(option => option.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=TaskManagementDB;Integrated Security=True;"));
 
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
 
 

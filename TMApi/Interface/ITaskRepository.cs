@@ -12,13 +12,13 @@ namespace TMApi.Interface
         Task<TaskItem> GetTaskById(int id);
 
         // Add a new task item
-        Task AddTask(TaskItem taskItem);
+        Task<bool> AddTask(TaskItem taskItem);
 
         // Update an existing task item
-        Task UpdateTask(int id, TaskItem taskItem);
+        Task<bool> UpdateTask(int id, TaskItem taskItem);
 
         // Delete a task item by id
-        Task DeleteTask(int id);
+        Task<bool> DeleteTask(int id);
 
     }
 }

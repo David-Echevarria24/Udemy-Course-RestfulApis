@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 using TMApi.Data;
+using TMApi.Interface;
 using TMApi.Models;
 
 namespace TMApi.Controllers
@@ -10,53 +12,68 @@ namespace TMApi.Controllers
     [ApiController]
     public class TaskItemsController : ControllerBase
     {
-        private ApiDbContext dbContext;
+        private ITaskRepository taskRepository;
 
-        public TaskItemsController(ApiDbContext dbContext)
+        public TaskItemsController(ITaskRepository taskRepository)
         {
-            this.dbContext = dbContext;
+            this.taskRepository = taskRepository;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<TaskItem>> Get()
+        public async Task<IActionResult> Get()
         {
-            return await dbContext.TaskItems.ToListAsync();
+            var taskItems = await taskRepository.GetAllTask();
+            if (taskItems == null) 
+            {
+                return NotFound();
+            }
+            return Ok(taskItems);
+            
         }
 
         [HttpGet("{id}")]
-        public async Task<TaskItem> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
+           
+            var taskItem = await taskRepository.GetTaskById(id);
+            if (taskItem == null) 
+            {
+                return NotFound();            
+            }
+            return Ok(taskItem);
         }
         [HttpPost]
-        public async Task Post([FromBody] TaskItem taskItem)
+        public async Task<IActionResult> Post([FromBody] TaskItem taskItem)
         {
-            await dbContext.TaskItems.AddAsync(taskItem);
-            await dbContext.SaveChangesAsync();
+            var isAdded = await taskRepository.AddTask(taskItem);
+            if (isAdded)
+            {
+                return StatusCode(StatusCodes.Status201Created);
+            }
+            return BadRequest("Something went wrong.");
         }
 
 
         [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] TaskItem taskItem)
+        public async Task<IActionResult> Put(int id, [FromBody] TaskItem taskItem)
         {
-            var existingTaskItem = await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
-            if (existingTaskItem != null)
+            var isUpdated = await taskRepository.UpdateTask(id, taskItem);
+            if (isUpdated)
             {
-                existingTaskItem.Title = taskItem.Title;
-                existingTaskItem.Description = taskItem.Description;
-                await dbContext.SaveChangesAsync();
+                return Ok("Request has been updated.");
             }
+            return BadRequest("Request was not completed.");
         }
 
         [HttpDelete("{id}")]
-        public async Task Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var existingTaskItem = await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
-            if (existingTaskItem != null)
+           var isDeleted =  await taskRepository.DeleteTask(id);
+            if (isDeleted)
             {
-                dbContext.TaskItems.Remove(existingTaskItem);
-                await dbContext.SaveChangesAsync();
+                return Ok("Deletion was complete.");
             }
+            return BadRequest("Could not complete deletion.");
         }
     }
 }

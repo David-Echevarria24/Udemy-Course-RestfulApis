@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 using TMApi.Data;
 using TMApi.Interface;
 using TMApi.Models;
@@ -15,41 +16,79 @@ namespace TMApi.Repositories
             this.dbContext = dbContext;
         }
 
+        public async Task<IEnumerable<TaskItem>> GetAllTask()
+        {
+            return await dbContext.TaskItems.ToListAsync();
+        }
+
         public async Task<TaskItem> GetTaskById(int id)
         {
             return await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task AddTask(TaskItem taskItem)
+        public async Task<bool> AddTask(TaskItem taskItem)
         {
-            await dbContext.TaskItems.AddAsync(taskItem);
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async  Task UpdateTask(int id, TaskItem taskItem)
-        {
-            var existingTaskItem = await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
-            if (existingTaskItem != null)
+            try
             {
-                existingTaskItem.Title = taskItem.Title;
-                existingTaskItem.Description = taskItem.Description;
+                await dbContext.TaskItems.AddAsync(taskItem);
                 await dbContext.SaveChangesAsync();
+                return true;
             }
-        }
-
-        public async Task DeleteTask(int id)
-        {
-            var existingTaskItem = await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
-            if (existingTaskItem != null)
+            catch 
             {
-                dbContext.TaskItems.Remove(existingTaskItem);
-                await dbContext.SaveChangesAsync();
+
+                return false;
             }
+
+            
         }
 
-        public async Task<IEnumerable<TaskItem>> GetAllTask()
+        public async  Task<bool> UpdateTask(int id, TaskItem taskItem)
         {
-            return await dbContext.TaskItems.ToListAsync();
+
+
+            try
+            {
+                var existingTaskItem = await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
+                if (existingTaskItem != null)
+                {
+                    existingTaskItem.Title = taskItem.Title;
+                    existingTaskItem.Description = taskItem.Description;
+                    await dbContext.SaveChangesAsync();
+                    return true;
+                }
+                else { return false; }
+            }
+            catch
+            {
+
+                return false;
+            }
+            
         }
+
+        public async Task<bool> DeleteTask(int id)
+        {
+
+
+            try
+            {
+                var existingTaskItem = await dbContext.TaskItems.FirstOrDefaultAsync(t => t.Id == id);
+                if (existingTaskItem != null)
+                {
+                    dbContext.TaskItems.Remove(existingTaskItem);
+                    await dbContext.SaveChangesAsync();
+                    return true;
+                }
+                else { return false; }
+            }
+            catch 
+            {
+
+                return false;
+            }
+           
+        }
+
     }
 }
