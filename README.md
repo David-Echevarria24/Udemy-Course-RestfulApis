@@ -10,68 +10,73 @@ This project is a simple Task Manager API that demonstrates RESTful API principl
 
 ```mermaid
 graph TB
-    Client[Client/Postman] -->|HTTP Request| Controller[TaskItemsController]
+    Client[🌐 Client/Postman] -->|HTTP Request| Controller[🎮 TaskItemsController]
     
-    Controller -->|GET /api/taskitems| GetAll[GetAllTask]
-    Controller -->|GET /api/taskitems/id| GetById[GetTaskById]
-    Controller -->|POST /api/taskitems| Post[AddTask]
-    Controller -->|PUT /api/taskitems/id| Put[UpdateTask]
-    Controller -->|DELETE /api/taskitems/id| Delete[DeleteTask]
+    Controller -->|📖 GET /api/taskitems| GetAll[📋 GetAllTask]
+    Controller -->|🔍 GET /api/taskitems/id| GetById[📄 GetTaskById]
+    Controller -->|➕ POST /api/taskitems| Post[✨ AddTask]
+    Controller -->|✏️ PUT /api/taskitems/id| Put[🔄 UpdateTask]
+    Controller -->|🗑️ DELETE /api/taskitems/id| Delete[❌ DeleteTask]
     
-    GetAll -->|Calls| Repo[TaskRepository]
+    GetAll -->|Calls| Repo[📦 TaskRepository]
     GetById -->|Calls| Repo
     Post -->|Calls| Repo
     Put -->|Calls| Repo
     Delete -->|Calls| Repo
     
-    Repo -->|LINQ Queries| DbContext[ApiDbContext]
-    DbContext -->|Entity Framework Core| DB[(SQL Server LocalDB<br/>TaskManagementDB)]
+    Repo -->|LINQ Queries| DbContext[🔌 ApiDbContext]
+    DbContext -->|Entity Framework Core| DB[(🗄️ SQL Server LocalDB<br/>TaskManagementDB)]
     
     DB -->|Data| DbContext
     DbContext -->|Returns| Repo
     Repo -->|Success/Failure| Controller
     
-    Controller -->|200 OK| Client
-    Controller -->|201 Created| Client
-    Controller -->|400 Bad Request| Client
-    Controller -->|404 Not Found| Client
+    Controller -->|✅ 200 OK| Client
+    Controller -->|🎉 201 Created| Client
+    Controller -->|⚠️ 400 Bad Request| Client
+    Controller -->|❓ 404 Not Found| Client
     
-    style Client fill:#e1f5ff
-    style Controller fill:#fff4e1
-    style Repo fill:#f0e1ff
-    style DbContext fill:#e1ffe1
-    style DB fill:#ffe1e1
+    style Client fill:#4A90E2,stroke:#2E5C8A,stroke-width:3px,color:#fff
+    style Controller fill:#F5A623,stroke:#D68910,stroke-width:3px,color:#fff
+    style GetAll fill:#7ED321,stroke:#5FA319,stroke-width:2px,color:#fff
+    style GetById fill:#7ED321,stroke:#5FA319,stroke-width:2px,color:#fff
+    style Post fill:#50E3C2,stroke:#3AB39A,stroke-width:2px,color:#fff
+    style Put fill:#BD10E0,stroke:#8B0AA8,stroke-width:2px,color:#fff
+    style Delete fill:#FF6B6B,stroke:#CC5555,stroke-width:2px,color:#fff
+    style Repo fill:#9013FE,stroke:#6B0FBF,stroke-width:3px,color:#fff
+    style DbContext fill:#F8E71C,stroke:#C6B916,stroke-width:3px,color:#333
+    style DB fill:#E74C3C,stroke:#C0392B,stroke-width:3px,color:#fff
 ```
 
 ## Request-Response Flow
 
 ```mermaid
 sequenceDiagram
-    participant C as Client
-    participant TC as TaskItemsController
-    participant TR as TaskRepository
-    participant DB as ApiDbContext
-    participant SQL as SQL Server
+    participant C as 🌐 Client
+    participant TC as 🎮 Controller
+    participant TR as 📦 Repository
+    participant DB as 🔌 DbContext
+    participant SQL as 🗄️ SQL Server
     
-    C->>TC: HTTP Request (GET/POST/PUT/DELETE)
+    C->>TC: 🚀 HTTP Request (GET/POST/PUT/DELETE)
     activate TC
-    TC->>TR: Call Repository Method
+    TC->>TR: 📞 Call Repository Method
     activate TR
-    TR->>DB: Execute LINQ Query
+    TR->>DB: 🔍 Execute LINQ Query
     activate DB
-    DB->>SQL: Translate to SQL Command
+    DB->>SQL: 📊 Translate to SQL Command
     activate SQL
-    SQL-->>DB: Return Data/Result
+    SQL-->>DB: ✨ Return Data/Result
     deactivate SQL
-    DB-->>TR: Return Entity/Success
+    DB-->>TR: 📦 Return Entity/Success
     deactivate DB
     
     alt Success
-        TR-->>TC: Return true/Data
-        TC-->>C: 200 OK / 201 Created
+        TR-->>TC: ✅ Return true/Data
+        TC-->>C: 🎉 200 OK / 201 Created
     else Failure
-        TR-->>TC: Return false/null
-        TC-->>C: 400 Bad Request / 404 Not Found
+        TR-->>TC: ❌ Return false/null
+        TC-->>C: ⚠️ 400 Bad Request / 404 Not Found
     end
     deactivate TR
     deactivate TC
